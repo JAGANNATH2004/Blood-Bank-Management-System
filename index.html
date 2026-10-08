@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Hemocare OS - Clinical Blood Bank Management &amp; Life Reserve System">
+  <title>HEMOCARE OS • Clinical Blood Bank & Life Reserve</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ruby: {
+              50: '#fff1f2',
+              100: '#ffe4e6',
+              200: '#fecdd3',
+              400: '#fb7185',
+              500: '#f43f5e',
+              600: '#e11d48',
+              700: '#be123c',
+              800: '#9f1239',
+              900: '#881337',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & Custom Style -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Supabase Official Client JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body
+  class="bg-[#090d16] text-slate-100 min-h-screen flex flex-col antialiased selection:bg-rose-600 selection:text-white">
+
+  <!-- ================= TOP UNIVERSAL HEADER ================= -->
+  <header
+    class="sticky top-0 z-40 bg-[#0c111e]/90 backdrop-blur-md border-b border-white/10 px-4 lg:px-8 py-3 flex items-center justify-between">
+    <!-- Brand / Logo -->
+    <div class="flex items-center space-x-3">
+      <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="routeToPortal('landing')">
+        <div
+          class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 to-rose-700 flex items-center justify-center pulse-drop shadow-lg shadow-rose-600/30 border border-rose-400/40">
+          <i data-lucide="droplet" class="w-5 h-5 text-white fill-white"></i>
+        </div>
+        <div>
+          <span
+            class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-rose-100 to-rose-400 bg-clip-text text-transparent">HEMOCARE</span>
+          <span
+            class="text-[10px] font-mono tracking-widest text-rose-400 ml-1.5 uppercase font-bold border border-rose-500/30 px-1.5 py-0.5 rounded">OS
+            v2.4</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header Clock -->
+    <div class="hidden md:flex items-center">
+      <div class="text-xs font-mono text-slate-400 flex items-center space-x-1.5">
+        <i data-lucide="clock" class="w-3.5 h-3.5 text-slate-500"></i>
+        <span id="live-clock">--:--:--</span>
+      </div>
+    </div>
+
+    <!-- Dynamic Header Session & Access Buttons -->
+    <div id="header-auth-controls" class="flex items-center space-x-2.5">
+      <!-- Injected via app.js -->
+    </div>
+  </header>
+
+  <!-- ================= VIEW 1: LANDING & PORTAL ACCESS ================= -->
+  <section id="view-landing" class="flex-1 overflow-y-auto">
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden py-16 lg:py-24 px-4 lg:px-8 border-b border-white/5">
+      <div class="absolute inset-0 hero-glow-banner pointer-events-none"></div>
+
+      <div class="max-w-6xl mx-auto text-center space-y-6 relative z-10">
+        <div
+          class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-bold tracking-wide uppercase">
+          <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+          Clinical Blood Bank &amp; Life Reserve Platform
+        </div>
+
+        <h1 class="text-4xl sm:text-6xl font-black text-white tracking-tight leading-tight">
+          Every Drop Counts. <br>
+          <span class="bg-gradient-to-r from-rose-400 via-rose-500 to-amber-300 bg-clip-text text-transparent">Every
+            Second Saves a Life.</span>
+        </h1>
+
+        <p class="max-w-2xl mx-auto text-sm sm:text-base text-slate-300 leading-relaxed">
+          A dedicated clinical network connecting voluntary blood donors, emergency hospital trauma centers, and
+          certified blood banks with real-time life reserve tracking.
+        </p>
+
+        <!-- Live Blood Reserve Radar Ticker -->
+        <div class="pt-4 max-w-4xl mx-auto">
+          <p class="text-xs font-mono text-slate-400 uppercase tracking-wider mb-3">Live Cold Storage Blood Reserve
+            Radar (Instant Count):</p>
+          <div id="landing-radar-grid" class="grid grid-cols-4 sm:grid-cols-8 gap-2">
+            <!-- 8 Blood Group Badges Injected Here -->
+          </div>
+        </div>
+
+        <!-- Dual Access Portal Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto pt-8 text-left">
+          <!-- 1. For Donors & Citizens -->
+          <div
+            class="glass-panel glass-panel-hover rounded-2xl p-6 border-l-4 border-l-cyan-500 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="p-3 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                  <i data-lucide="user-check" class="w-6 h-6"></i>
+                </span>
+                <span class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300">Donor
+                  Portal</span>
+              </div>
+              <h3 class="text-xl font-black text-white mb-1">For Donors &amp; Patients</h3>
+              <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                View your digital donor credential card, check eligibility, track personal family blood requisitions, or
+                schedule voluntary donation appointments.
+              </p>
+            </div>
+            <div class="pt-2">
+              <button onclick="openModal('modal-auth-user')"
+                class="w-full py-2.5 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-cyan-600/20">
+                <i data-lucide="log-in" class="w-4 h-4"></i> Enter Donor Portal
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. For Blood Bank Centers -->
+          <div
+            class="glass-panel glass-panel-hover rounded-2xl p-6 border-l-4 border-l-rose-500 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="p-3 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                  <i data-lucide="shield-plus" class="w-6 h-6"></i>
+                </span>
+                <span
+                  class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-rose-950/40 text-rose-300 border border-rose-500/30">Clinical
+                  Staff</span>
+              </div>
+              <h3 class="text-xl font-black text-white mb-1">Blood Bank Centers &amp; Hospitals</h3>
+              <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                Administrative control over batch cold storage, serology status, direct hospital dispatch approvals,
+                printable certificates, and community donation drives.
+              </p>
+            </div>
+            <div class="pt-2">
+              <button onclick="openModal('modal-auth-center')"
+                class="btn-crimson w-full py-2.5 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-lg">
+                <i data-lucide="building-2" class="w-4 h-4"></i> Staff Portal Access
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Quick Blood Finder Tool -->
+    <div id="landing-search-section" class="max-w-5xl mx-auto py-12 px-4 space-y-6">
+      <div class="glass-panel rounded-2xl p-6 border border-white/10">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="search" class="w-5 h-5 text-rose-400"></i>
+              <span>Emergency Blood Availability Locator</span>
+            </h2>
+            <p class="text-xs text-slate-400">Query active units stored across cold chain reserve units.</p>
+          </div>
+          <button onclick="openUserEmergencyReqModal('O-')"
+            class="btn-crimson px-3 py-1.5 text-xs font-bold rounded-lg flex items-center gap-1.5">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Emergency Request
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Required Blood Group</label>
+            <select id="landing-search-group"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="ALL">All Compatible Types</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">City / Region</label>
+            <input type="text" id="landing-search-city" placeholder="e.g. Chennai, Bengaluru, Mumbai"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+
+          <div class="flex items-end">
+            <button id="btn-landing-search"
+              class="w-full py-2 text-xs font-bold rounded-lg bg-rose-600 hover:bg-rose-500 text-white transition flex items-center justify-center gap-1.5">
+              <i data-lucide="search" class="w-4 h-4"></i> Check Real-Time Stock
+            </button>
+          </div>
+        </div>
+
+        <div id="landing-search-results" class="pt-2">
+          <!-- Injected via app.js -->
+        </div>
+      </div>
+
+      <!-- Upcoming Community Blood Drives Row -->
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="calendar" class="w-5 h-5 text-cyan-400"></i>
+              <span>Upcoming Voluntary Blood Drives</span>
+            </h3>
+            <p class="text-xs text-slate-400">Join a mobile donation camp near your campus or workplace.</p>
+          </div>
+          <button onclick="openModal('modal-auth-center')" class="text-xs font-bold text-rose-400 hover:underline">Host
+            a Drive</button>
+        </div>
+
+        <div id="landing-camps-preview" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Injected via app.js -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VIEW 2: USER / DONOR PORTAL ================= -->
+  <section id="view-user-portal" class="view-portal hidden flex-1 p-4 lg:p-8 max-w-6xl mx-auto w-full space-y-6">
+    <div class="flex items-center justify-between flex-wrap gap-4 pb-4 border-b border-white/10">
+      <div>
+        <span
+          class="px-2.5 py-0.5 rounded-full text-xs font-mono bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-bold uppercase">
+          Citizen &amp; Donor Portal
+        </span>
+        <h1 class="text-2xl font-black text-white mt-1">My Donor Workspace</h1>
+        <p class="text-xs text-slate-400">Manage your blood donation records and active requisitions.</p>
+      </div>
+
+      <div class="flex items-center space-x-2.5">
+        <button onclick="openUserEmergencyReqModal()"
+          class="btn-crimson px-3.5 py-2 text-xs font-bold rounded-lg flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Request Blood For Patient
+        </button>
+        <button onclick="openBookSlotModal()"
+          class="px-3.5 py-2 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1.5 shadow-md shadow-emerald-950/40">
+          <i data-lucide="calendar" class="w-3.5 h-3.5 text-white"></i> Book Donation Slot
+        </button>
+        <button onclick="openDonorProfileModal()"
+          class="px-3.5 py-2 text-xs font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 transition flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="user-cog" class="w-3.5 h-3.5 text-rose-400"></i> Edit Profile
+        </button>
+      </div>
+    </div>
+
+    <!-- Donor Card & Quick Stats Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div id="user-donor-card" class="lg:col-span-2">
+        <!-- Digital Donor Card Injected here -->
+      </div>
+
+      <!-- Quick Donor Guide -->
+      <div class="glass-panel rounded-2xl p-5 border border-white/10 flex flex-col justify-between">
+        <div>
+          <h3 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+            <i data-lucide="heart" class="w-4 h-4 text-rose-500 fill-rose-500"></i>
+            <span>Life Saver Milestones</span>
+          </h3>
+          <p class="text-xs text-slate-300 mb-4">Each single donation of whole blood can save up to <b
+              class="text-rose-400">3 separate lives</b> by component separation.</p>
+          <div class="space-y-2 text-xs text-slate-400">
+            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-900/60">
+              <span>Whole Blood</span>
+              <span class="text-white font-mono">1 Pint (450 ml)</span>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-900/60">
+              <span>Platelet Donation</span>
+              <span class="text-white font-mono">Every 7 Days</span>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded-lg bg-slate-900/60">
+              <span>Minimum Cooldown</span>
+              <span class="text-white font-mono">90 Days</span>
+            </div>
+          </div>
+        </div>
+        <button onclick="switchCenterTab('compatibility'); routeToPortal('center_portal');"
+          class="mt-4 text-xs font-bold text-cyan-400 hover:underline flex items-center gap-1">
+          <span>Check Blood Compatibility Matrix</span> <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Scheduled Donation Appointments -->
+    <div class="glass-panel rounded-2xl p-6 border border-white/10 space-y-4">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <i data-lucide="calendar-check" class="w-5 h-5 text-emerald-400"></i>
+            <span>My Scheduled Donation Appointments</span>
+          </h3>
+          <p class="text-xs text-slate-400">Track and manage your upcoming voluntary donation slots at certified centers.</p>
+        </div>
+        <button onclick="openBookSlotModal()"
+          class="px-3.5 py-1.5 text-xs font-bold rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 transition flex items-center gap-1.5">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+          <span>Book New Slot</span>
+        </button>
+      </div>
+      <div id="user-appointments-list" class="space-y-3">
+        <!-- Appointments Injected Here via app.js -->
+      </div>
+    </div>
+
+    <!-- Active Requisitions Submitted by User -->
+    <div class="glass-panel rounded-2xl p-6 border border-white/10 space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <i data-lucide="git-pull-request" class="w-5 h-5 text-rose-400"></i>
+            <span>My Active Blood Requisitions</span>
+          </h3>
+          <p class="text-xs text-slate-400">Track real-time clinical authorization and hospital dispatch status.</p>
+        </div>
+      </div>
+      <div id="user-requests-list" class="space-y-3">
+        <!-- Requisitions Injected Here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VIEW 3: BLOOD BANK CENTER PORTAL ================= -->
+  <section id="view-center-portal" class="view-portal hidden flex flex-1 overflow-hidden relative">
+    <!-- CENTER SIDEBAR -->
+    <aside id="sidebar"
+      class="fixed lg:static inset-y-0 left-0 z-30 w-64 bg-[#0d1220] border-r border-white/10 flex flex-col justify-between transition-transform duration-300 transform -translate-x-full lg:translate-x-0 pt-3 lg:pt-0">
+      <div class="p-4 space-y-1">
+        <div
+          class="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-rose-400 flex items-center justify-between">
+          <span id="center-brand-name" class="truncate max-w-[150px]">Center Admin</span>
+          <span id="center-notice-code" class="text-[10px] font-mono bg-rose-500/20 text-rose-300 px-1.5 py-0.5 rounded">STAFF</span>
+        </div>
+
+        <a href="#center-dashboard" data-center-target="dashboard"
+          class="nav-link active flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300">
+          <i data-lucide="layout-dashboard" class="w-4 h-4 text-rose-400"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="#center-inventory" data-center-target="inventory"
+          class="nav-link flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300">
+          <i data-lucide="package" class="w-4 h-4 text-rose-400"></i>
+          <span>Inventory &amp; Cold Stock</span>
+        </a>
+
+        <a href="#center-donors" data-center-target="donors"
+          class="nav-link flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300">
+          <i data-lucide="users" class="w-4 h-4 text-rose-400"></i>
+          <span>Donors Registry</span>
+        </a>
+
+        <a href="#center-requests" data-center-target="requests"
+          class="nav-link flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300">
+          <i data-lucide="git-pull-request" class="w-4 h-4 text-rose-400"></i>
+          <span>Hospital Requisitions</span>
+        </a>
+
+        <a href="#center-camps" data-center-target="camps"
+          class="nav-link flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300">
+          <i data-lucide="calendar" class="w-4 h-4 text-rose-400"></i>
+          <span>Donation Drives</span>
+        </a>
+
+        <a href="#center-appointments" data-center-target="appointments"
+          class="nav-link flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300">
+          <div class="flex items-center space-x-3">
+            <i data-lucide="calendar-check" class="w-4 h-4 text-emerald-400"></i>
+            <span>Donor Appointments</span>
+          </div>
+          <span id="center-nav-appointments-badge" class="px-1.5 py-0.5 text-[10px] font-mono font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">0</span>
+        </a>
+
+        <div class="pt-4 px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">Clinical Tools &amp; Settings</div>
+
+        <a href="#center-compatibility" data-center-target="compatibility"
+          class="nav-link flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300">
+          <i data-lucide="shield-alert" class="w-4 h-4 text-cyan-400"></i>
+          <span>Compatibility Matrix</span>
+        </a>
+
+        <a href="#center-analytics" data-center-target="analytics"
+          class="nav-link flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300">
+          <i data-lucide="bar-chart-3" class="w-4 h-4 text-emerald-400"></i>
+          <span>Reports &amp; Backup</span>
+        </a>
+
+        <a href="#center-profile" data-center-target="profile"
+          class="nav-link flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300">
+          <i data-lucide="building" class="w-4 h-4 text-rose-400"></i>
+          <span>Center Profile</span>
+        </a>
+      </div>
+
+      <div class="p-4 m-3 rounded-xl bg-gradient-to-br from-rose-950/40 to-slate-900 border border-rose-500/20">
+        <div class="flex items-center space-x-2 text-rose-400 text-xs font-bold mb-1">
+          <i data-lucide="activity" class="w-4 h-4"></i>
+          <span>Cold Chain Active</span>
+        </div>
+        <p class="text-[11px] text-slate-400">Continuous refrigeration telemetry verified (-40°C).</p>
+      </div>
+    </aside>
+
+    <!-- CENTER CONTENT MAIN -->
+    <main class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6">
+
+      <!-- SUB-VIEW: DASHBOARD -->
+      <div id="center-view-dashboard" class="center-view-section space-y-6">
+        <div
+          class="p-4 rounded-xl bg-gradient-to-r from-rose-950/60 via-slate-900/80 to-slate-900 border border-rose-500/30 flex items-center justify-between flex-wrap gap-4">
+          <div class="flex items-center space-x-3">
+            <span class="p-2 rounded-lg bg-rose-600/30 text-rose-400 border border-rose-500/40">
+              <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+            </span>
+            <div>
+              <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                <span>PRIORITY NOTICE: CENTRAL BLOOD RESERVE MONITOR</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white">LIVE RECALL</span>
+              </h2>
+              <p class="text-xs text-slate-300 mt-0.5">Cold chain units operating under nominal conditions (-40°C
+                plasma, 4°C RBCs).</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button id="btn-sync-dashboard"
+              class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 transition flex items-center gap-1.5 shadow-sm">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5 sync-spin-target"></i>
+              <span>Sync Database</span>
+            </button>
+            <button onclick="openCenterProfileModal()"
+              class="px-3.5 py-1.5 text-xs font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 transition flex items-center gap-1.5 shadow-sm">
+              <i data-lucide="building" class="w-3.5 h-3.5 text-rose-400"></i>
+              <span>Center Profile</span>
+            </button>
+            <button onclick="switchCenterTab('donors')"
+              class="px-3.5 py-1.5 text-xs font-bold rounded-lg bg-rose-600 hover:bg-rose-500 text-white transition flex items-center gap-1.5 shadow-sm">
+              <i data-lucide="phone-call" class="w-3.5 h-3.5"></i> Recall Donors
+            </button>
+          </div>
+        </div>
+
+        <!-- 5 KPI Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+          <div class="glass-panel rounded-xl p-5 border-l-4 border-l-rose-500">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Blood Units</span>
+            <div class="mt-2 flex items-baseline justify-between">
+              <h3 id="kpi-total-units" class="text-3xl font-extrabold text-white">0</h3>
+              <span class="text-xs text-emerald-400 font-medium">+12%</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Available in Cold Chain</p>
+          </div>
+
+          <div class="glass-panel rounded-xl p-5 border-l-4 border-l-amber-500">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Shortage Alerts</span>
+            <div class="mt-2 flex items-baseline justify-between">
+              <h3 id="kpi-critical-shortage" class="text-3xl font-extrabold text-amber-400">0</h3>
+              <span class="text-xs text-rose-400 font-medium">Critical</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Groups under safe quota</p>
+          </div>
+
+          <div class="glass-panel rounded-xl p-5 border-l-4 border-l-cyan-500">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Eligible Donors</span>
+            <div class="mt-2 flex items-baseline justify-between">
+              <h3 id="kpi-active-donors" class="text-3xl font-extrabold text-white">0</h3>
+              <span class="text-xs text-cyan-400 font-medium">Ready</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Screened and cleared</p>
+          </div>
+
+          <div class="glass-panel rounded-xl p-5 border-l-4 border-l-rose-600">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Hospital Requests</span>
+            <div class="mt-2 flex items-baseline justify-between">
+              <h3 id="kpi-pending-requests" class="text-3xl font-extrabold text-rose-400">0</h3>
+              <span class="text-xs text-amber-400 font-medium">Pending</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Hospital dispatch queue</p>
+          </div>
+
+          <div class="glass-panel rounded-xl p-5 border-l-4 border-l-emerald-500 cursor-pointer hover:bg-white/[0.02] transition" onclick="switchCenterTab('appointments')">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Donor Slots</span>
+            <div class="mt-2 flex items-baseline justify-between">
+              <h3 id="kpi-appointments-count" class="text-3xl font-extrabold text-emerald-400">0</h3>
+              <span class="text-xs text-emerald-400 font-medium font-mono">Booked</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Center appointments</p>
+          </div>
+        </div>
+
+        <!-- 8 Blood Group Matrix -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="layers" class="w-5 h-5 text-rose-400"></i>
+              <span>Live Blood Inventory Matrix</span>
+            </h2>
+            <button onclick="switchCenterTab('inventory')"
+              class="text-xs font-semibold text-rose-400 hover:text-rose-300">
+              Detailed Storage &rarr;
+            </button>
+          </div>
+          <div id="blood-matrix-grid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+            <!-- Injected via app.js -->
+          </div>
+        </div>
+
+        <!-- Charts & Urgent List -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="glass-panel rounded-xl p-5">
+            <h3 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+              <i data-lucide="pie-chart" class="w-4 h-4 text-rose-400"></i>
+              <span>Blood Group Ratio</span>
+            </h3>
+            <div class="relative h-60">
+              <canvas id="chart-inventory-distribution"></canvas>
+            </div>
+          </div>
+
+          <div class="glass-panel rounded-xl p-5">
+            <h3 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+              <i data-lucide="trending-up" class="w-4 h-4 text-cyan-400"></i>
+              <span>Monthly Inflow vs Requests</span>
+            </h3>
+            <div class="relative h-60">
+              <canvas id="chart-monthly-trend"></canvas>
+            </div>
+          </div>
+
+          <div class="glass-panel rounded-xl p-5 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <i data-lucide="flame" class="w-4 h-4 text-rose-500"></i>
+                <span>Urgent Queue</span>
+              </h3>
+              <button onclick="switchCenterTab('requests')" class="text-xs font-bold text-rose-400 hover:underline">View
+                All</button>
+            </div>
+            <div id="dashboard-urgent-requests" class="space-y-2 flex-1 overflow-y-auto max-h-60">
+              <!-- Injected via app.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Donor Appointments Dashboard Widget -->
+        <div class="glass-panel rounded-2xl p-6 border border-white/10 space-y-4">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <i data-lucide="calendar-check" class="w-5 h-5 text-emerald-400"></i>
+                <span>Upcoming Donor Appointments (Slot Bookings)</span>
+              </h3>
+              <p class="text-xs text-slate-400">Voluntary donors scheduled to arrive for collection at this certified center.</p>
+            </div>
+            <button onclick="switchCenterTab('appointments')" class="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1">
+              <span>View All In Appointments Registry</span> <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+          <div id="dashboard-appointments-preview" class="space-y-3">
+            <!-- Appointments Table / Cards injected via app.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-VIEW: INVENTORY -->
+      <div id="center-view-inventory" class="center-view-section hidden space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h1 class="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+              <i data-lucide="archive" class="w-6 h-6 text-rose-500"></i>
+              <span>Cold Storage Batch Inventory</span>
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">Component breakdown and real-time expiration monitoring.</p>
+          </div>
+          <div class="flex items-center space-x-2.5">
+            <button id="btn-export-csv"
+              class="px-3.5 py-2 text-xs font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 transition flex items-center gap-1.5">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i> Export CSV
+            </button>
+            <button onclick="openModal('modal-add-unit')"
+              class="btn-crimson px-3.5 py-2 text-xs font-bold rounded-lg flex items-center gap-1.5">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Blood Unit
+            </button>
+          </div>
+        </div>
+
+        <div class="glass-panel rounded-xl p-4 flex items-center flex-wrap gap-3 justify-between">
+          <div class="flex items-center flex-wrap gap-3 flex-1">
+            <input type="text" id="inv-search" placeholder="Search batch ID, donor..."
+              class="px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white min-w-[200px]">
+            <select id="inv-filter-group"
+              class="px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="ALL">All Blood Groups</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
+            <select id="inv-filter-component"
+              class="px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="ALL">All Components</option>
+              <option value="Whole Blood">Whole Blood</option>
+              <option value="Red Blood Cells">Red Blood Cells</option>
+              <option value="Platelets">Platelets</option>
+              <option value="Fresh Frozen Plasma">Fresh Frozen Plasma</option>
+            </select>
+            <select id="inv-filter-status"
+              class="px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="ALL">All Statuses</option>
+              <option value="Available">Available</option>
+              <option value="Reserved">Reserved</option>
+              <option value="Expired">Expired</option>
+            </select>
+          </div>
+          <span id="inv-total-count" class="text-xs font-mono text-slate-400">0 Units Found</span>
+        </div>
+
+        <div class="glass-panel rounded-xl overflow-hidden border border-white/10">
+          <div class="overflow-x-auto">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Unit ID</th>
+                  <th>Group</th>
+                  <th>Component</th>
+                  <th>Volume</th>
+                  <th>Collected</th>
+                  <th>Expires</th>
+                  <th>Storage Bay</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-table-body">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-VIEW: DONORS -->
+      <div id="center-view-donors" class="center-view-section hidden space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h1 class="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+              <i data-lucide="users" class="w-6 h-6 text-rose-500"></i>
+              <span>Donors Registry</span>
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">Qualified volunteer donor screening records.</p>
+          </div>
+          <button onclick="openModal('modal-add-donor')"
+            class="btn-crimson px-3.5 py-2 text-xs font-bold rounded-lg flex items-center gap-1.5">
+            <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Register New Donor
+          </button>
+        </div>
+
+        <div class="glass-panel rounded-xl p-4 flex items-center flex-wrap gap-3 justify-between">
+          <div class="flex items-center flex-wrap gap-3 flex-1">
+            <input type="text" id="donor-search" placeholder="Search donor name, city..."
+              class="px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white min-w-[200px]">
+            <select id="donor-filter-group"
+              class="px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="ALL">All Blood Groups</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
+          </div>
+          <span id="donor-total-count" class="text-xs font-mono text-slate-400">0 Donors</span>
+        </div>
+
+        <div class="glass-panel rounded-xl overflow-hidden border border-white/10">
+          <div class="overflow-x-auto">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Donor Info</th>
+                  <th>Group</th>
+                  <th>Contact</th>
+                  <th>City</th>
+                  <th>History</th>
+                  <th>Eligibility</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="donors-table-body">
+                <!-- Injected via app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-VIEW: REQUESTS -->
+      <div id="center-view-requests" class="center-view-section hidden space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h1 class="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+              <i data-lucide="git-pull-request" class="w-6 h-6 text-rose-500"></i>
+              <span>Hospital Blood Requisitions</span>
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">Cross-match verification and clinical dispatch authorization.</p>
+          </div>
+          <button onclick="openNewRequestModal()"
+            class="btn-crimson px-3.5 py-2 text-xs font-bold rounded-lg flex items-center gap-1.5">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> New Requisition
+          </button>
+        </div>
+
+        <div class="glass-panel rounded-xl p-4 flex items-center flex-wrap gap-3 justify-between">
+          <div class="flex items-center flex-wrap gap-3 flex-1">
+            <input type="text" id="req-search" placeholder="Search patient, hospital..."
+              class="px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white min-w-[200px]">
+            <select id="req-filter-status"
+              class="px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="ALL">All Requisition Status</option>
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Dispatched">Dispatched</option>
+            </select>
+          </div>
+          <span id="req-total-count" class="text-xs font-mono text-slate-400">0 Requisitions</span>
+        </div>
+
+        <div class="glass-panel rounded-xl overflow-hidden border border-white/10">
+          <div class="overflow-x-auto">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Req ID</th>
+                  <th>Patient</th>
+                  <th>Hospital</th>
+                  <th>Group Needed</th>
+                  <th>Urgency</th>
+                  <th>Status</th>
+                  <th>Requested Date</th>
+                  <th>Dispatch Action</th>
+                </tr>
+              </thead>
+              <tbody id="requests-table-body">
+                <!-- Injected via app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-VIEW: CAMPS -->
+      <div id="center-view-camps" class="center-view-section hidden space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h1 class="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+              <i data-lucide="calendar" class="w-6 h-6 text-rose-500"></i>
+              <span>Community Blood Drives</span>
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">Mobile collection drives and camp quotas.</p>
+          </div>
+          <button onclick="openModal('modal-schedule-camp')"
+            class="btn-crimson px-3.5 py-2 text-xs font-bold rounded-lg flex items-center gap-1.5">
+            <i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i> Schedule Blood Drive
+          </button>
+        </div>
+        <div id="camps-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Injected via app.js -->
+        </div>
+      </div>
+
+      <!-- SUB-VIEW: COMPATIBILITY -->
+      <div id="center-view-compatibility" class="center-view-section hidden space-y-6">
+        <div class="glass-panel rounded-xl p-6">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+            Select Patient Blood Group:
+          </label>
+          <div class="flex flex-wrap gap-2.5">
+            <button onclick="renderCompatibilityMatrix('O-')" data-group="O-" class="compat-group-btn">O-</button>
+            <button onclick="renderCompatibilityMatrix('O+')" data-group="O+" class="compat-group-btn">O+</button>
+            <button onclick="renderCompatibilityMatrix('A-')" data-group="A-" class="compat-group-btn">A-</button>
+            <button onclick="renderCompatibilityMatrix('A+')" data-group="A+" class="compat-group-btn">A+</button>
+            <button onclick="renderCompatibilityMatrix('B-')" data-group="B-" class="compat-group-btn">B-</button>
+            <button onclick="renderCompatibilityMatrix('B+')" data-group="B+" class="compat-group-btn">B+</button>
+            <button onclick="renderCompatibilityMatrix('AB-')" data-group="AB-" class="compat-group-btn">AB-</button>
+            <button onclick="renderCompatibilityMatrix('AB+')" data-group="AB+" class="compat-group-btn">AB+</button>
+          </div>
+          <div class="mt-4 p-3 rounded-xl bg-slate-900 border border-white/5 text-xs text-slate-300">
+            <p id="compat-summary-text"></p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="glass-panel rounded-xl p-5 border-t-4 border-t-emerald-500">
+            <h3 class="text-sm font-bold text-white mb-3">Can Safely Donate Red Blood Cells To:</h3>
+            <div id="compat-give-list" class="grid grid-cols-4 gap-2.5"></div>
+          </div>
+          <div class="glass-panel rounded-xl p-5 border-t-4 border-t-blue-500">
+            <h3 class="text-sm font-bold text-white mb-3">Can Safely Receive Red Blood Cells From:</h3>
+            <div id="compat-receive-list" class="grid grid-cols-4 gap-2.5"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-VIEW: REPORTS -->
+      <div id="center-view-analytics" class="center-view-section hidden space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="glass-panel rounded-xl p-5 flex flex-col justify-between">
+            <div>
+              <h3 class="text-base font-bold text-white mb-1">Export Blood Stock CSV</h3>
+              <p class="text-xs text-slate-400 mb-4">Export all active, reserved, and quarantined blood inventory
+                batches into CSV format.</p>
+            </div>
+            <button onclick="exportInventoryCSV()"
+              class="w-full py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition">
+              Download CSV
+            </button>
+          </div>
+
+          <div class="glass-panel rounded-xl p-5 flex flex-col justify-between">
+            <div>
+              <h3 class="text-base font-bold text-white mb-1">Print Manifest</h3>
+              <p class="text-xs text-slate-400 mb-4">Print formatted inventory summary sheet for biological inventory
+                control.</p>
+            </div>
+            <button onclick="window.print()"
+              class="w-full py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 font-bold text-xs transition">
+              Print Manifest
+            </button>
+          </div>
+
+          <div class="glass-panel rounded-xl p-5 flex flex-col justify-between border-cyan-500/20">
+            <div>
+              <h3 class="text-base font-bold text-white mb-1">Central Database Sync</h3>
+              <p class="text-xs text-slate-400 mb-4">Query live Supabase cloud cluster to refresh clinical inventory, donors, and request queue.</p>
+            </div>
+            <button onclick="triggerSync(true)"
+              class="w-full py-2 rounded-lg bg-cyan-950/60 hover:bg-cyan-900 text-cyan-300 border border-cyan-500/30 font-bold text-xs transition">
+              Refresh Live Data
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-VIEW: DONOR APPOINTMENTS -->
+      <div id="center-view-appointments" class="center-view-section hidden space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-4 pb-2 border-b border-white/10">
+          <div>
+            <h1 class="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+              <i data-lucide="calendar-check" class="w-6 h-6 text-emerald-400"></i>
+              <span>Donor Appointments &amp; Slot Bookings</span>
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">Review, confirm, and process voluntary donation slots booked by registered donors.</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="triggerSync(true)"
+              class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 transition flex items-center gap-1.5 shadow-sm">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5 sync-spin-target"></i>
+              <span>Refresh Appointments</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Appointment Filter Controls -->
+        <div class="glass-panel rounded-xl p-4 border border-white/5 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2 flex-wrap gap-2" id="apt-filter-status-group">
+            <button onclick="filterCenterAppointments('ALL')" data-apt-status="ALL"
+              class="apt-status-tab px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white transition">All Slots</button>
+            <button onclick="filterCenterAppointments('Scheduled')" data-apt-status="Scheduled"
+              class="apt-status-tab px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Scheduled</button>
+            <button onclick="filterCenterAppointments('Confirmed')" data-apt-status="Confirmed"
+              class="apt-status-tab px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Confirmed</button>
+            <button onclick="filterCenterAppointments('Completed')" data-apt-status="Completed"
+              class="apt-status-tab px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Completed</button>
+            <button onclick="filterCenterAppointments('Cancelled')" data-apt-status="Cancelled"
+              class="apt-status-tab px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:text-white transition">Cancelled</button>
+          </div>
+
+          <div class="flex items-center space-x-2 flex-1 max-w-xs">
+            <div class="relative w-full">
+              <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-3 text-slate-500"></i>
+              <input type="text" id="apt-search-input" placeholder="Search donor name or phone..."
+                class="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+            </div>
+          </div>
+        </div>
+
+        <!-- Appointments Registry Table / List -->
+        <div class="glass-panel rounded-xl border border-white/10 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-900/80 text-slate-400 font-mono text-[11px] border-b border-white/10">
+                <tr>
+                  <th class="p-3.5">SLOT ID</th>
+                  <th class="p-3.5">DONOR NAME &amp; BLOOD GROUP</th>
+                  <th class="p-3.5">CONTACT INFO</th>
+                  <th class="p-3.5">APPOINTMENT DATE &amp; TIME</th>
+                  <th class="p-3.5">DONATION TYPE</th>
+                  <th class="p-3.5">STATUS</th>
+                  <th class="p-3.5 text-right">CLINICAL ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="center-appointments-tbody" class="divide-y divide-white/5">
+                <!-- Appointments Injected Here via app.js -->
+              </tbody>
+            </table>
+          </div>
+          <div id="center-appointments-empty" class="hidden p-8 text-center text-slate-400">
+            <i data-lucide="calendar-x" class="w-8 h-8 text-slate-500 mx-auto mb-2"></i>
+            <p class="text-sm font-semibold text-white">No Appointments Found</p>
+            <p class="text-xs text-slate-400 mt-1">There are no donor appointments matching the selected filter criteria.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-VIEW: CENTER PROFILE MANAGEMENT -->
+      <div id="center-view-profile" class="center-view-section hidden space-y-6">
+        <div class="flex items-center justify-between flex-wrap gap-4 pb-2 border-b border-white/10">
+          <div>
+            <h1 class="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+              <i data-lucide="building" class="w-6 h-6 text-rose-500"></i>
+              <span>Center Profile Management</span>
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">Update official facility details, administrator contact, license numbers, and access credentials.</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Cloud Database Sync Active</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="glass-panel rounded-2xl p-6 lg:p-8 border border-white/10 max-w-4xl">
+          <form id="form-center-view-profile" class="space-y-5">
+            <div class="p-4 rounded-xl bg-slate-900/60 border border-white/5 flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-xl bg-rose-600/20 border border-rose-500/30 flex items-center justify-center text-rose-400">
+                  <i data-lucide="shield-check" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <h3 id="center-profile-display-name" class="text-base font-bold text-white">Center Administration</h3>
+                  <p class="text-xs font-mono text-slate-400">CODE: <span id="center-profile-display-code" class="text-rose-400 font-bold">CTR-DEFAULT</span></p>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                VERIFIED FACILITY
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Blood Center / Hospital Name *</label>
+                <input type="text" id="cp-view-name" required
+                  class="w-full px-3.5 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Center Code (Fixed Database Identifier)</label>
+                <input type="text" id="cp-view-code" readonly disabled
+                  class="w-full px-3.5 py-2 text-xs rounded-lg bg-slate-950 border border-white/5 text-slate-400 font-mono cursor-not-allowed">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Official Clinical Email *</label>
+                <input type="email" id="cp-view-email" required
+                  class="w-full px-3.5 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Helpline / Contact Phone *</label>
+                <input type="tel" id="cp-view-phone" required
+                  class="w-full px-3.5 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Chief Officer / Contact Person</label>
+                <input type="text" id="cp-view-contact"
+                  class="w-full px-3.5 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Drug License / Registration No.</label>
+                <input type="text" id="cp-view-license"
+                  class="w-full px-3.5 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Facility Category</label>
+                <select id="cp-view-category"
+                  class="w-full px-3.5 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+                  <option value="Blood Bank & Component Center">Blood Bank &amp; Component Center</option>
+                  <option value="Hospital Blood Bank">Hospital Blood Bank</option>
+                  <option value="Regional Transfusion Center">Regional Transfusion Center</option>
+                  <option value="Mobile Drive & Storage Center">Mobile Drive &amp; Storage Center</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">City *</label>
+                <input type="text" id="cp-view-city" required
+                  class="w-full px-3.5 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">State / Province</label>
+                <input type="text" id="cp-view-state"
+                  class="w-full px-3.5 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Full Physical Facility Address *</label>
+              <textarea id="cp-view-address" rows="2" required
+                class="w-full px-3.5 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none"></textarea>
+            </div>
+
+            <!-- Password Change Section -->
+            <div class="p-4 rounded-xl bg-slate-950/70 border border-white/5 space-y-3">
+              <div class="flex items-center space-x-2 text-xs font-bold text-slate-200">
+                <i data-lucide="key" class="w-4 h-4 text-amber-400"></i>
+                <span>Change Center Access Password (Optional)</span>
+              </div>
+              <p class="text-[11px] text-slate-400">Leave these password fields blank if you do not want to alter your current center password.</p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">New Access Password</label>
+                  <input type="password" id="cp-view-password" placeholder="Leave blank to keep current"
+                    class="w-full px-3.5 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Confirm New Password</label>
+                  <input type="password" id="cp-view-confirm-password" placeholder="Re-enter new password"
+                    class="w-full px-3.5 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-2 flex items-center justify-end space-x-3">
+              <button type="submit" id="btn-save-center-profile"
+                class="btn-crimson px-6 py-2.5 text-xs font-bold rounded-lg flex items-center gap-2 shadow-lg">
+                <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                <span>Update Center Profile &amp; Sync</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </main>
+  </section>
+
+  <!-- ================= ACCESS MODALS ================= -->
+
+  <!-- 1. Modal: User / Donor Sign In -->
+  <div id="modal-auth-user"
+    class="modal-container hidden fixed inset-y-0 inset-x-0 z-50 modal-backdrop items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl w-full max-w-md p-6 border border-white/10">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="user" class="w-5 h-5 text-cyan-400"></i>
+          <span>User &amp; Donor Sign In</span>
+        </h3>
+        <button data-modal-close class="p-1 text-slate-400 hover:text-white"><i data-lucide="x"
+            class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-user-login" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+          <input type="email" id="user-login-email" required
+            placeholder="donor@example.com"
+            class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+          <input type="password" id="user-login-password" required placeholder="Enter password"
+            class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+        </div>
+        <button type="submit"
+          class="w-full py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs transition">
+          Sign In to Donor Portal
+        </button>
+      </form>
+
+      <div class="mt-4 pt-3 border-t border-white/10 text-center text-xs text-slate-400">
+        New voluntary donor? <button onclick="closeAllModals(); openModal('modal-add-donor');"
+          class="text-cyan-400 hover:underline font-bold">Register as Donor</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Modal: Blood Bank Center Staff Login -->
+  <div id="modal-auth-center"
+    class="modal-container hidden fixed inset-y-0 inset-x-0 z-50 modal-backdrop items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl w-full max-w-md p-6 border border-white/10">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="shield" class="w-5 h-5 text-rose-500"></i>
+          <span>Blood Bank Center Staff Login</span>
+        </h3>
+        <button data-modal-close class="p-1 text-slate-400 hover:text-white"><i data-lucide="x"
+            class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-center-login" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Center / Hospital Code *</label>
+          <input type="text" id="center-login-code" required placeholder="e.g. CTR-BLR-01"
+            class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white font-mono uppercase">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Staff Officer Email *</label>
+          <input type="email" id="center-login-email" required placeholder="center@hospital.org"
+            class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Access Password *</label>
+          <input type="password" id="center-login-password" required placeholder="Enter center password"
+            class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+        </div>
+        <button type="submit" class="btn-crimson w-full py-2.5 rounded-lg font-bold text-xs">
+          Access Administrative Console
+        </button>
+      </form>
+
+      <div class="mt-4 pt-3 border-t border-white/10 text-center text-xs text-slate-400">
+        New Blood Bank or Hospital Center? <button onclick="closeAllModals(); openModal('modal-register-center');"
+          class="text-rose-400 hover:underline font-bold">Register New Center</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Register Blood Bank Center -->
+  <div id="modal-register-center"
+    class="modal-container hidden fixed inset-y-0 inset-x-0 z-50 modal-backdrop items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl w-full max-w-xl p-6 border border-white/10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="building-2" class="w-5 h-5 text-rose-500"></i>
+          <span>Register Blood Bank Center</span>
+        </h3>
+        <button data-modal-close class="p-1 text-slate-400 hover:text-white"><i data-lucide="x"
+            class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-register-center" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Center / Hospital Name *</label>
+            <input type="text" id="reg-center-name" required placeholder="e.g. Apollo LifeLine Blood Bank"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Center Code * (Unique ID)</label>
+            <input type="text" id="reg-center-code" required placeholder="e.g. CTR-APOLLO-01"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white font-mono uppercase">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Official Center Email *</label>
+            <input type="email" id="reg-center-email" required placeholder="bloodbank@hospital.org"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Contact Phone *</label>
+            <input type="tel" id="reg-center-phone" required placeholder="+91 98765 43210"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Medical Officer / In-Charge *</label>
+            <input type="text" id="reg-center-officer" required placeholder="Dr. Rajesh Kumar"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Drug License / Registration No *</label>
+            <input type="text" id="reg-center-license" required placeholder="e.g. CDSCO-DL-2024-819"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white font-mono">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">City *</label>
+            <input type="text" id="reg-center-city" required placeholder="e.g. Mumbai, Bengaluru"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">State *</label>
+            <input type="text" id="reg-center-state" required placeholder="e.g. Karnataka, Maharashtra"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Full Facility Address *</label>
+          <input type="text" id="reg-center-address" required placeholder="Hospital Complex, Main Road, City"
+            class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Access Password *</label>
+            <input type="password" id="reg-center-password" required minlength="6" placeholder="Minimum 6 characters"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Confirm Password *</label>
+            <input type="password" id="reg-center-confirm-password" required minlength="6" placeholder="Re-enter password"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-crimson w-full py-2.5 rounded-lg font-bold text-xs mt-2">
+          Register Blood Bank Center & Initialize Storage
+        </button>
+      </form>
+
+      <div class="mt-4 pt-3 border-t border-white/10 text-center text-xs text-slate-400">
+        Already registered? <button onclick="closeAllModals(); openModal('modal-auth-center');"
+          class="text-rose-400 hover:underline font-bold">Sign In to Center Console</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Modal: Register New Donor -->
+  <div id="modal-add-donor"
+    class="modal-container hidden fixed inset-y-0 inset-x-0 z-50 modal-backdrop items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl w-full max-w-xl p-6 border border-white/10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="user-plus" class="w-5 h-5 text-rose-500"></i>
+          <span>Register New Blood Donor</span>
+        </h3>
+        <button data-modal-close class="p-1 text-slate-400 hover:text-white"><i data-lucide="x"
+            class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-add-donor" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Full Name *</label>
+            <input type="text" id="donor-form-name" required placeholder="e.g. Rachel Adams"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Blood Group *</label>
+            <select id="donor-form-group" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Age *</label>
+            <input type="number" id="donor-form-age" min="18" max="65" value="28" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Gender</label>
+            <select id="donor-form-gender"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Weight (kg) *</label>
+            <input type="number" id="donor-form-weight" min="50" value="65" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Phone Number *</label>
+            <input type="tel" id="donor-form-phone" required placeholder="+91 1234567890"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Email Address *</label>
+            <input type="email" id="donor-form-email" required placeholder="[EMAIL_ADDRESS]"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+        </div>
+
+        <!-- Password Creation Fields for Sync -->
+        <div class="p-3.5 rounded-xl bg-slate-900/90 border border-rose-500/30 space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-bold text-rose-300 flex items-center gap-1.5">
+              <i data-lucide="lock" class="w-3.5 h-3.5 text-rose-400"></i>
+              <span>Create Account Password *</span>
+            </label>
+            <span class="text-[10px] text-slate-400">Min 6 characters</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <input type="password" id="donor-form-password" required minlength="6" placeholder="Create password"
+                class="w-full px-3 py-2 text-xs rounded-lg bg-slate-950 border border-white/10 text-white focus:border-rose-400 focus:outline-none">
+            </div>
+            <div>
+              <input type="password" id="donor-form-confirm-password" required minlength="6"
+                placeholder="Confirm password"
+                class="w-full px-3 py-2 text-xs rounded-lg bg-slate-950 border border-white/10 text-white focus:border-rose-400 focus:outline-none">
+            </div>
+          </div>
+          <p class="text-[10px] text-slate-400">This password secures your donor record and allows you to sign in to
+            your personal donor portal.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">City *</label>
+            <input type="text" id="donor-form-city" required placeholder="e.g. Chennai, Bengaluru, Mumbai"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Hemoglobin (g/dL)</label>
+            <input type="number" step="0.1" id="donor-form-hb" placeholder="e.g. 14.0"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Address</label>
+          <input type="text" id="donor-form-address" placeholder="Street Address"
+            class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Last Donated Date</label>
+            <input type="date" id="donor-form-last-donated"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Notes</label>
+            <input type="text" id="donor-form-notes" placeholder="Voluntary donor"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-2">
+          <button type="button" data-modal-close
+            class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300">Cancel</button>
+          <button type="submit" id="btn-submit-donor" class="btn-crimson px-5 py-2 text-xs font-bold rounded-lg flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5"></i><span>Register &amp; Sync Donor</span></button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Modal: Add Blood Unit -->
+  <div id="modal-add-unit"
+    class="modal-container hidden fixed inset-y-0 inset-x-0 z-50 modal-backdrop items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl w-full max-w-lg p-6 border border-white/10">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="package-plus" class="w-5 h-5 text-rose-500"></i>
+          <span>Store Blood Unit</span>
+        </h3>
+        <button data-modal-close class="p-1 text-slate-400 hover:text-white"><i data-lucide="x"
+            class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-add-unit" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Blood Group *</label>
+            <select id="unit-form-group" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Component Type *</label>
+            <select id="unit-form-component" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="Whole Blood">Whole Blood (35d)</option>
+              <option value="Red Blood Cells">Red Blood Cells (42d)</option>
+              <option value="Platelets">Platelets (7d)</option>
+              <option value="Fresh Frozen Plasma">Fresh Frozen Plasma (365d)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Volume (ml)</label>
+            <input type="number" id="unit-form-volume" value="450"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Collection Date</label>
+            <input type="date" id="unit-form-col-date"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Donor Name / Source</label>
+          <input type="text" id="unit-form-donor-name" placeholder="Walk-in donor"
+            class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Cold Bay Location</label>
+            <select id="unit-form-storage"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="Refrigerated Bay 1">Refrigerated Bay 1</option>
+              <option value="Cryo-Vault A-02">Cryo-Vault A-02</option>
+              <option value="Plasma Freezer -40C">Plasma Freezer -40C</option>
+              <option value="Platelet Agitator 1">Platelet Agitator 1</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Initial Status</label>
+            <select id="unit-form-status"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="Available">Available</option>
+              <option value="Quarantined">Quarantined</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-2">
+          <button type="button" data-modal-close
+            class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300">Cancel</button>
+          <button type="submit" class="btn-crimson px-5 py-2 text-xs font-bold rounded-lg">Store Unit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Modal: New Blood Requisition -->
+  <div id="modal-new-request"
+    class="modal-container hidden fixed inset-y-0 inset-x-0 z-50 modal-backdrop items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl w-full max-w-lg p-6 border border-white/10">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="file-plus" class="w-5 h-5 text-rose-500"></i>
+          <span>Blood Requisition Order</span>
+        </h3>
+        <button data-modal-close class="p-1 text-slate-400 hover:text-white"><i data-lucide="x"
+            class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-new-req" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Patient Name *</label>
+            <input type="text" id="req-form-patient" required placeholder="John Doe"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Blood Group Needed *</label>
+            <select id="req-form-group" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Age</label>
+            <input type="number" id="req-form-age" value="38"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Gender</label>
+            <select id="req-form-gender"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Units (Bags) *</label>
+            <input type="number" id="req-form-units" min="1" max="10" value="1" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Component Needed</label>
+            <select id="req-form-component"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="Whole Blood">Whole Blood</option>
+              <option value="Red Blood Cells">Red Blood Cells</option>
+              <option value="Platelets">Platelets</option>
+              <option value="Fresh Frozen Plasma">Fresh Frozen Plasma</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Urgency Level *</label>
+            <select id="req-form-urgency"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+              <option value="CRITICAL">CRITICAL (Immediate Trauma)</option>
+              <option value="URGENT">URGENT (&lt; 4 Hours)</option>
+              <option value="NORMAL">NORMAL (Scheduled)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Hospital *</label>
+            <input type="text" id="req-form-hospital" required placeholder="St. Jude General Hospital"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Department</label>
+            <input type="text" id="req-form-dept" placeholder="Cardiothoracic Surgery"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Attending Physician *</label>
+            <input type="text" id="req-form-doctor" required placeholder="Dr. Evelyn Reed"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Clinical Notes</label>
+            <input type="text" id="req-form-notes" placeholder="Trauma resuscitation"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-2">
+          <button type="button" data-modal-close
+            class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300">Cancel</button>
+          <button type="submit" class="btn-crimson px-5 py-2 text-xs font-bold rounded-lg">Submit Requisition</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. Modal: Schedule Camp -->
+  <div id="modal-schedule-camp"
+    class="modal-container hidden fixed inset-y-0 inset-x-0 z-50 modal-backdrop items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl w-full max-w-lg p-6 border border-white/10">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="calendar-plus" class="w-5 h-5 text-rose-500"></i>
+          <span>Schedule Voluntary Blood Drive</span>
+        </h3>
+        <button data-modal-close class="p-1 text-slate-400 hover:text-white"><i data-lucide="x"
+            class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-schedule-camp" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Drive Name *</label>
+          <input type="text" id="camp-form-name" required placeholder="City Autumn Life Drive"
+            class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Organizing Entity *</label>
+            <input type="text" id="camp-form-org" required placeholder="Red Cross / University"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Venue Location *</label>
+            <input type="text" id="camp-form-venue" required placeholder="Civic Center Hall"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Date *</label>
+            <input type="date" id="camp-form-date" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Time</label>
+            <input type="text" id="camp-form-time" value="09:00 AM - 04:00 PM"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Target Units</label>
+            <input type="number" id="camp-form-target" value="100"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Coordinator Name</label>
+            <input type="text" id="camp-form-contact" placeholder="Dr. Arthur Bell"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Phone</label>
+            <input type="tel" id="camp-form-phone" placeholder="+1 (555) 774-2091"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white">
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-2">
+          <button type="button" data-modal-close
+            class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300">Cancel</button>
+          <button type="submit" class="btn-crimson px-5 py-2 text-xs font-bold rounded-lg">Schedule Drive</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 7. Modal: Official Dispatch Slip -->
+  <div id="modal-dispatch-slip"
+    class="modal-container hidden fixed inset-y-0 inset-x-0 z-50 modal-backdrop items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl w-full max-w-2xl p-6 border border-white/10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4 no-print">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="file-check" class="w-5 h-5 text-emerald-400"></i>
+          <span>Clinical Requisition Release Certificate</span>
+        </h3>
+        <button data-modal-close class="p-1 text-slate-400 hover:text-white"><i data-lucide="x"
+            class="w-5 h-5"></i></button>
+      </div>
+
+      <div id="dispatch-slip-content">
+        <!-- Injected dynamically in viewDispatchSlip() -->
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-white/10 flex justify-end space-x-2 no-print">
+        <button id="btn-print-slip"
+          class="px-4 py-2 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1.5 shadow-md">
+          <i data-lucide="printer" class="w-3.5 h-3.5"></i> Print Certificate
+        </button>
+        <button data-modal-close
+          class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Modal: Donor Profile Management -->
+  <div id="modal-donor-profile"
+    class="modal-container hidden fixed inset-y-0 inset-x-0 z-50 modal-backdrop items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl w-full max-w-xl p-6 border border-white/10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="user-cog" class="w-5 h-5 text-rose-500"></i>
+          <span>My Donor Profile &amp; Clinical Details</span>
+        </h3>
+        <button data-modal-close class="p-1 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-donor-profile" class="space-y-4">
+        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-white/5 flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">CLINICAL REGISTRY ID</span>
+            <span id="dp-id-badge" class="text-xs font-mono font-bold text-rose-400">DNR-ONLINE</span>
+          </div>
+          <div>
+            <span class="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">ELIGIBILITY STATUS</span>
+            <span id="dp-status-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300">Eligible</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Full Name *</label>
+            <input type="text" id="dp-form-name" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Blood Group *</label>
+            <select id="dp-form-group" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Phone Number *</label>
+            <input type="tel" id="dp-form-phone" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Email Address *</label>
+            <input type="email" id="dp-form-email" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Age (Yrs) *</label>
+            <input type="number" id="dp-form-age" min="18" max="65" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Gender</label>
+            <select id="dp-form-gender"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Weight (kg) *</label>
+            <input type="number" id="dp-form-weight" min="50" step="0.5" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Hb (g/dL)</label>
+            <input type="number" id="dp-form-hb" step="0.1" min="10" max="20"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">City *</label>
+            <input type="text" id="dp-form-city" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Full Address</label>
+            <input type="text" id="dp-form-address" placeholder="Residential area or street"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Health Notes / Medical Considerations</label>
+          <textarea id="dp-form-notes" rows="2" placeholder="Allergies, medications, or dietary details (optional)"
+            class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none"></textarea>
+        </div>
+
+        <!-- Password Change Box -->
+        <div class="p-3.5 rounded-xl bg-slate-950/70 border border-white/5 space-y-2.5">
+          <div class="flex items-center space-x-2 text-xs font-bold text-slate-300">
+            <i data-lucide="key" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span>Update Account Password (Optional)</span>
+          </div>
+          <p class="text-[11px] text-slate-400">Leave blank if you do not wish to change your current login password.</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1">New Password</label>
+              <input type="password" id="dp-form-password" placeholder="Min. 6 characters"
+                class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1">Confirm New Password</label>
+              <input type="password" id="dp-form-confirm-password" placeholder="Re-enter password"
+                class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-2">
+          <button type="button" data-modal-close
+            class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Cancel</button>
+          <button type="submit" id="btn-save-donor-profile"
+            class="btn-crimson px-5 py-2 text-xs font-bold rounded-lg flex items-center gap-1.5 shadow-md">
+            <i data-lucide="save" class="w-3.5 h-3.5"></i>
+            <span>Save Profile &amp; Sync</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 9. Modal: Book Donation Slot at Available Blood Center -->
+  <div id="modal-book-slot"
+    class="modal-container hidden fixed inset-y-0 inset-x-0 z-50 modal-backdrop items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl w-full max-w-xl p-6 border border-white/10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="calendar-plus" class="w-5 h-5 text-emerald-400"></i>
+          <span>Schedule Blood Donation Slot</span>
+        </h3>
+        <button data-modal-close class="p-1 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-book-slot" class="space-y-4">
+        <!-- Center Selection -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Select Available Donation Center *</label>
+          <select id="slot-form-center" required
+            class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-emerald-500 outline-none font-medium">
+            <option value="" disabled selected>Select a certified blood bank or hospital center...</option>
+          </select>
+        </div>
+
+        <!-- Selected Center Info Card -->
+        <div id="slot-center-preview" class="p-3.5 rounded-xl bg-slate-900/60 border border-emerald-500/20 hidden">
+          <div class="flex items-start justify-between">
+            <div>
+              <h4 id="slot-preview-name" class="text-xs font-bold text-white">--</h4>
+              <p id="slot-preview-address" class="text-[11px] text-slate-300 mt-0.5"><i data-lucide="map-pin" class="inline w-3 h-3 text-rose-400 mr-1"></i>--</p>
+              <p id="slot-preview-phone" class="text-[11px] text-slate-400 mt-0.5"><i data-lucide="phone" class="inline w-3 h-3 text-cyan-400 mr-1"></i>--</p>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 font-bold">CERTIFIED</span>
+          </div>
+        </div>
+
+        <!-- Date & Time Slot -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Donation Date *</label>
+            <input type="date" id="slot-form-date" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-emerald-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Time Slot *</label>
+            <select id="slot-form-time" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-emerald-500 outline-none font-medium">
+              <option value="09:00 AM - 10:00 AM">09:00 AM - 10:00 AM (Morning)</option>
+              <option value="10:30 AM - 11:30 AM">10:30 AM - 11:30 AM (Morning)</option>
+              <option value="11:30 AM - 12:30 PM">11:30 AM - 12:30 PM (Mid-day)</option>
+              <option value="02:00 PM - 03:00 PM">02:00 PM - 03:00 PM (Afternoon)</option>
+              <option value="03:30 PM - 04:30 PM">03:30 PM - 04:30 PM (Afternoon)</option>
+              <option value="05:00 PM - 06:00 PM">05:00 PM - 06:00 PM (Evening)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Donation Type -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Donation Type *</label>
+          <select id="slot-form-type" required
+            class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-emerald-500 outline-none">
+            <option value="Whole Blood">Whole Blood (450 ml - Standard 3 lives saved)</option>
+            <option value="Platelets (Apheresis)">Platelets / Apheresis (Critical for Dengue &amp; Cancer patients)</option>
+            <option value="Fresh Frozen Plasma">Fresh Frozen Plasma (FFP - For burns &amp; trauma)</option>
+            <option value="Red Blood Cells">Red Blood Cells (Concentrated erythrocytes)</option>
+          </select>
+        </div>
+
+        <!-- Donor Information Confirmation -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Donor Name *</label>
+            <input type="text" id="slot-form-donor-name" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-emerald-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Blood Group *</label>
+            <select id="slot-form-blood-group" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-emerald-500 outline-none font-bold text-rose-400">
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Contact Phone *</label>
+            <input type="tel" id="slot-form-donor-phone" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-emerald-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Donor Email Address</label>
+            <input type="email" id="slot-form-donor-email"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-emerald-500 outline-none">
+          </div>
+        </div>
+
+        <!-- Eligibility Affirmation -->
+        <div class="p-3.5 rounded-xl bg-slate-950/70 border border-white/5 space-y-2">
+          <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+            <i data-lucide="check-square" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>Pre-Donation Eligibility Affirmation</span>
+          </span>
+          <label class="flex items-start space-x-2 text-[11px] text-slate-300 cursor-pointer">
+            <input type="checkbox" id="slot-affirm-weight" required checked class="mt-0.5 rounded text-emerald-500 focus:ring-0">
+            <span>I confirm my body weight is 50 kg or greater and I am aged between 18 and 65 years.</span>
+          </label>
+          <label class="flex items-start space-x-2 text-[11px] text-slate-300 cursor-pointer">
+            <input type="checkbox" id="slot-affirm-fit" required checked class="mt-0.5 rounded text-emerald-500 focus:ring-0">
+            <span>I am feeling fit, healthy, and hydrated today with no active cold, cough, or fever.</span>
+          </label>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Special Clinical Notes (Optional)</label>
+          <input type="text" id="slot-form-notes" placeholder="e.g. First time donor, preferred bed position"
+            class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-emerald-500 outline-none">
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-2">
+          <button type="button" data-modal-close
+            class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Cancel</button>
+          <button type="submit" id="btn-submit-book-slot"
+            class="px-5 py-2 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1.5 shadow-md shadow-emerald-950/40">
+            <i data-lucide="calendar-check" class="w-3.5 h-3.5"></i>
+            <span>Confirm Slot &amp; Sync to Center</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 10. Modal: Quick Center Profile Edit -->
+  <div id="modal-center-profile"
+    class="modal-container hidden fixed inset-y-0 inset-x-0 z-50 modal-backdrop items-center justify-center p-4">
+    <div class="glass-panel rounded-2xl w-full max-w-xl p-6 border border-white/10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="building" class="w-5 h-5 text-rose-500"></i>
+          <span>Blood Bank Center Profile Settings</span>
+        </h3>
+        <button data-modal-close class="p-1 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <form id="form-modal-center-profile" class="space-y-4">
+        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-white/5 flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">FACILITY CODE</span>
+            <span id="cp-modal-code-badge" class="text-xs font-mono font-bold text-rose-400">CTR-DEFAULT</span>
+          </div>
+          <div>
+            <span class="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">STATUS</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300">Active</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Center / Hospital Name *</label>
+          <input type="text" id="cp-modal-name" required
+            class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Official Clinical Email *</label>
+            <input type="email" id="cp-modal-email" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Helpline Phone *</label>
+            <input type="tel" id="cp-modal-phone" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Contact Officer / CMO</label>
+            <input type="text" id="cp-modal-contact"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Clinical License No.</label>
+            <input type="text" id="cp-modal-license"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Category</label>
+            <select id="cp-modal-category"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+              <option value="Blood Bank & Component Center">Blood Bank &amp; Component Center</option>
+              <option value="Hospital Blood Bank">Hospital Blood Bank</option>
+              <option value="Regional Transfusion Center">Regional Transfusion Center</option>
+              <option value="Mobile Drive & Storage Center">Mobile Drive &amp; Storage Center</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">City *</label>
+            <input type="text" id="cp-modal-city" required
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">State</label>
+            <input type="text" id="cp-modal-state"
+              class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Facility Physical Address *</label>
+          <textarea id="cp-modal-address" rows="2" required
+            class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none"></textarea>
+        </div>
+
+        <!-- Password Change Box -->
+        <div class="p-3.5 rounded-xl bg-slate-950/70 border border-white/5 space-y-2.5">
+          <div class="flex items-center space-x-2 text-xs font-bold text-slate-300">
+            <i data-lucide="key" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span>Update Center Access Password (Optional)</span>
+          </div>
+          <p class="text-[11px] text-slate-400">Leave blank if you do not want to alter your center password.</p>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1">New Password</label>
+              <input type="password" id="cp-modal-password" placeholder="Min. 6 characters"
+                class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1">Confirm New Password</label>
+              <input type="password" id="cp-modal-confirm-password" placeholder="Re-enter password"
+                class="w-full px-3 py-2 text-xs rounded-lg bg-slate-900 border border-white/10 text-white focus:border-rose-500 outline-none">
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-2">
+          <button type="button" data-modal-close
+            class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Cancel</button>
+          <button type="submit" id="btn-save-modal-center-profile"
+            class="btn-crimson px-5 py-2 text-xs font-bold rounded-lg flex items-center gap-1.5 shadow-md">
+            <i data-lucide="save" class="w-3.5 h-3.5"></i>
+            <span>Update &amp; Sync to Database</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notifications Container -->
+  <div id="toast-container"></div>
+
+  <!-- Application Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
